@@ -24,3 +24,23 @@ Il progetto nasce come strumento per **docenti, linguisti, redattori e studenti*
 
 ## 🗂️ Struttura del progetto
 
+├── app.py # Script principale Streamlit
+├── vdb.csv # Vocabolario di Base (file richiesto)
+├── requirements.txt # Dipendenze Python
+└── README.md # Documentazione del progetto
+
+
+---
+
+## ⚙️ Requisiti
+
+### 🐍 Dipendenze principali
+- **Python ≥ 3.9** (Python Software Foundation, 2022)
+- **Streamlit**
+- **Pandas**
+
+Installa tutto con:
+```bash
+pip install -r requirements.txt
+
+
