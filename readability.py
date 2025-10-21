@@ -210,4 +210,43 @@ Le opzioni *Ignora accenti* e *Escludi token con cifre* si applicano al testo e 
                 """
             )
 
+# ───────────────────────────── Export risultati ─────────────────────────────
+
+# Crea un dizionario con i risultati principali
+results = {
+    "parole_totali": total_tokens,
+    "frasi": total_sentences,
+    "in_vdb": in_count,
+    "fuori_vdb": out_count,
+    "percent_in_vdb": round(p_in, 2),
+    "percent_fuori_vdb": round(p_out, 2),
+    "uniche_in_vdb": unique_in,
+    "uniche_fuori_vdb": unique_out,
+    "gulpease": round(g_score, 2),
+    "parole_per_frase": round(avg_sent_len, 2),
+    "caratteri_per_parola": round(avg_word_len, 2),
+    "ttr_percent": round(ttr, 2),
+    "percent_parole_lunghe": round(pct_long, 2)
+}
+
+# Crea DataFrame e pulsante per scaricare
+results_df = pd.DataFrame([results])
+
+st.download_button(
+    label="📊 Scarica risultati leggibilità (CSV)",
+    data=to_csv_download(results_df),
+    file_name="risultati_leggibilita.csv",
+    mime="text/csv"
+)
+
+# (opzionale) anche in formato JSON
+import json
+st.download_button(
+    label="📋 Scarica risultati leggibilità (JSON)",
+    data=json.dumps(results, ensure_ascii=False, indent=2).encode("utf-8"),
+    file_name="risultati_leggibilita.json",
+    mime="application/json"
+)
+
 st.caption("© 2025 — Analisi VDB e leggibilità")
+
