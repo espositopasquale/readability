@@ -230,17 +230,41 @@ if run:
 
             results_df = pd.DataFrame([results])
             st.download_button(
-                label="📊 Scarica risultati leggibilità (CSV)",
+                label="Scarica risultati leggibilità (CSV)",
                 data=to_csv_download(results_df),
                 file_name="risultati_leggibilita.csv",
                 mime="text/csv"
             )
             st.download_button(
-                label="📋 Scarica risultati leggibilità (JSON)",
+                label="Scarica risultati leggibilità (JSON)",
                 data=json.dumps(results, ensure_ascii=False, indent=2).encode("utf-8"),
                 file_name="risultati_leggibilita.json",
                 mime="application/json"
             )
+
+        from io import BytesIO
+
+        def to_excel_download(df_dict: dict[str, pd.DataFrame]) -> bytes:
+            """Crea un file Excel con più fogli a partire da un dizionario di DataFrame."""
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+                for sheet_name, df in df_dict.items():
+                    df.to_excel(writer, sheet_name=sheet_name[:31], index=False)
+            return output.getvalue()
+        
+        # --- Aggiunta pulsante Excel ---
+        excel_data = to_excel_download({
+            "Risultati leggibilità": results_df,
+            "Fuori vocabolario": df_all if 'df_all' in locals() else pd.DataFrame()
+        })
+        
+        st.download_button(
+            label="📘 Scarica tutto (Excel .xlsx)",
+            data=excel_data,
+            file_name="analisi_vdb_leggibilita.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        
 
         with st.expander("Dettagli e note"):
             st.markdown(
@@ -255,3 +279,4 @@ Le opzioni *Ignora accenti* e *Escludi token con cifre* si applicano al testo e 
             )
 
 st.caption("© 2025 — Analisi VDB e leggibilità")
+
