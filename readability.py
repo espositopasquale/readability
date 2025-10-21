@@ -212,58 +212,65 @@ if run:
                 st.info("Tutte le parole del testo risultano nel vocabolario di base selezionato.")
 
             # ───────────────────────────── Export risultati ─────────────────────────────
-            results = {
-                "parole_totali": total_tokens,
-                "frasi": total_sentences,
-                "in_vdb": in_count,
-                "fuori_vdb": out_count,
-                "percent_in_vdb": round(p_in, 2),
-                "percent_fuori_vdb": round(p_out, 2),
-                "uniche_in_vdb": unique_in,
-                "uniche_fuori_vdb": unique_out,
-                "gulpease": round(g_score, 2),
-                "parole_per_frase": round(avg_sent_len, 2),
-                "caratteri_per_parola": round(avg_word_len, 2),
-                "ttr_percent": round(ttr, 2),
-                "percent_parole_lunghe": round(pct_long, 2)
-            }
+results = {
+    "parole_totali": total_tokens,
+    "frasi": total_sentences,
+    "in_vdb": in_count,
+    "fuori_vdb": out_count,
+    "percent_in_vdb": round(p_in, 2),
+    "percent_fuori_vdb": round(p_out, 2),
+    "uniche_in_vdb": unique_in,
+    "uniche_fuori_vdb": unique_out,
+    "gulpease": round(g_score, 2),
+    "parole_per_frase": round(avg_sent_len, 2),
+    "caratteri_per_parola": round(avg_word_len, 2),
+    "ttr_percent": round(ttr, 2),
+    "percent_parole_lunghe": round(pct_long, 2)
+}
 
-            results_df = pd.DataFrame([results])
-            st.download_button(
-                label="Scarica risultati leggibilità (CSV)",
-                data=to_csv_download(results_df),
-                file_name="risultati_leggibilita.csv",
-                mime="text/csv"
-            )
-            st.download_button(
-                label="Scarica risultati leggibilità (JSON)",
-                data=json.dumps(results, ensure_ascii=False, indent=2).encode("utf-8"),
-                file_name="risultati_leggibilita.json",
-                mime="application/json"
-            )
+results_df = pd.DataFrame([results])
 
-        from io import BytesIO
+# CSV
+st.download_button(
+    label="📊 Scarica risultati leggibilità (CSV)",
+    data=to_csv_download(results_df),
+    file_name="risultati_leggibilita.csv",
+    mime="text/csv"
+)
 
-        def to_excel_download(df_dict: dict[str, pd.DataFrame]) -> bytes:
-            """Crea un file Excel con più fogli a partire da un dizionario di DataFrame."""
-            output = BytesIO()
-            with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                for sheet_name, df in df_dict.items():
-                    df.to_excel(writer, sheet_name=sheet_name[:31], index=False)
-            return output.getvalue()
-        
-            # --- Aggiunta pulsante Excel ---
-            excel_data = to_excel_download({
-                "Risultati leggibilità": results_df,
-                "Fuori vocabolario": df_all if 'df_all' in locals() else pd.DataFrame()
-            })
-            
-            st.download_button(
-                label="📘 Scarica tutto (Excel .xlsx)",
-                data=excel_data,
-                file_name="analisi_vdb_leggibilita.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+# JSON
+st.download_button(
+    label="📋 Scarica risultati leggibilità (JSON)",
+    data=json.dumps(results, ensure_ascii=False, indent=2).encode("utf-8"),
+    file_name="risultati_leggibilita.json",
+    mime="application/json"
+)
+
+# Excel export utility
+from io import BytesIO
+
+def to_excel_download(df_dict: dict[str, pd.DataFrame]) -> bytes:
+    """Crea un file Excel con più fogli a partire da un dizionario di DataFrame."""
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        for sheet_name, df in df_dict.items():
+            df.to_excel(writer, sheet_name=sheet_name[:31], index=False)
+    output.seek(0)
+    return output.getvalue()
+
+# Create Excel file (multi-sheet)
+excel_data = to_excel_download({
+    "Risultati leggibilità": results_df,
+    "Fuori vocabolario": df_all if 'df_all' in locals() else pd.DataFrame()
+})
+
+st.download_button(
+    label="📘 Scarica tutto (Excel .xlsx)",
+    data=excel_data,
+    file_name="analisi_vdb_leggibilita.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
         
 
         with st.expander("Dettagli e note"):
@@ -279,5 +286,6 @@ Le opzioni *Ignora accenti* e *Escludi token con cifre* si applicano al testo e 
             )
 
 st.caption("© 2025 — Analisi VDB e leggibilità")
+
 
 
