@@ -257,18 +257,18 @@ if run:
                 mime="application/json"
             )
 
-            # Excel
-            excel_data = to_excel_download({
-                "Risultati leggibilità": results_df,
-                "Fuori vocabolario": df_all
-            })
+            # # Excel
+            # excel_data = to_excel_download({
+            #     "Risultati leggibilità": results_df,
+            #     "Fuori vocabolario": df_all
+            # })
 
-            st.download_button(
-                label="📘 Scarica tutto (Excel .xlsx)",
-                data=excel_data,
-                file_name="analisi_vdb_leggibilita.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+            # st.download_button(
+            #     label="📘 Scarica tutto (Excel .xlsx)",
+            #     data=excel_data,
+            #     file_name="analisi_vdb_leggibilita.xlsx",
+            #     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            # )
 
         with st.expander("Dettagli e note"):
             st.markdown(
@@ -283,3 +283,4 @@ Le opzioni *Ignora accenti* e *Escludi token con cifre* si applicano al testo e 
             )
 
 st.caption("© 2025 — Analisi VDB e leggibilità")
+
